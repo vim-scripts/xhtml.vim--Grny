@@ -1,0 +1,15 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=1236
+
+Syntax highlighting for Extensible HyperText Markup Language.
+Handles XHTML 1.0 (Strict, Transitional and Frameset) and XHTML 1.1;
+XHTML 2.0 (as of 7th Working Draft), including XML Events and XForms, is also highlighted.
+
+Syntax of the following languages embedded in XHTML document can be highlighted: MathML, SVG, CSS, JavaScript, VBScript, SSI and XSSI.
+
+There is also special highlighting for XHTML events ("on..." attributes with JavaScript content), however it is possible to disable it by setting the following variable:
+    xhtml_no_events_rendering
+(just insert line "let xhtml_no_events_rendering=1" to your .vimrc file).
+
+CSS highlighting in "style" attributes is availaible too; you can disable it by setting this variable:
+    xhtml_no_inline_css_rendering
+
