@@ -3,7 +3,7 @@
 " Filenames:	*.xhtml *.html *.htm *.shtml *.stm
 " Maintainer:	Michal Gorny <michal-gorny@wp.pl>
 " URL:		http://mig.webpark.pl/vim/xhtml.vim
-" Last_change:  2005 Mar 11
+" Last_change:  2005 Apr 11
 " Credits:	Based on Claudio Fleiner's html.vim
 
 if !exists("main_syntax")
@@ -13,13 +13,17 @@ if !exists("main_syntax")
   let main_syntax = 'xhtml'
 endif
 
+" Load XML syntax file
 runtime! syntax/xml.vim
+
+syn cluster xmlTagHook add=@xhtmlTagHook
+syn cluster xmlAttribHook add=@xhtmlAttribHook
 
 syn case match
 
 " XHTML ELEMENTS
 
-syn cluster xmlTagHook add=xhtmlElement
+syn cluster xhtmlTagHook add=xhtmlElement
 
 " XHTML 1.0 Strict elements
 syn keyword xhtmlElement contained abbr acronym address area base bdo big
@@ -63,7 +67,7 @@ syn keyword xhtmlElement contained listener
 
 " XHTML ATTRIBUTES
 
-syn cluster xmlAttribHook add=xhtmlAttr
+syn cluster xhtmlAttribHook add=xhtmlAttr
 
 " XHTML 1.0 Strict attributes
 syn keyword xhtmlAttr contained abbr accept accesskey action align alt archive
@@ -112,24 +116,28 @@ syn keyword xhtmlAttr contained propagate target
 " SPECIALS
 
 " Embedded MathML (DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1)
-syn include @xhtmlMathML syntax/mathml.vim
-unlet b:current_syntax
-syn cluster xmlTagHook remove=mathmlElement
-syn cluster xmlAttribHook remove=mathmlAttr
-syn region xhtmlMaths start="<\(\w\+:\)\?math\>" keepend end="</\(\w\+:\)\?math>" contains=mathmlTag,mathmlEndTag,xmlEntity,xmlComment
-syn region mathmlTag start=+<[^ /!?<>"']\@=+ keepend end=+>+ contained contains=mathmlTagName,mathmlAttr,xmlEqual,xmlString
-syn match mathmlTagName +[<]\@<=[^ /!?<>"']\++ contained contains=xmlNamespace,xmlAttribPunct,mathmlElement,@xmlTagHook display
-syn match mathmlEndTag +</[^ /!?<>"']\+>+ contained contains=xmlNamespace,xmlAttribPunct,mathmlElement
+if !exists("xhtml_no_embedded_mathml")
+  syn include @xhtmlMathML syntax/mathml.vim
+  unlet b:current_syntax
+  syn cluster xmlTagHook remove=mathmlElement
+  syn cluster xmlAttribHook remove=mathmlAttr
+  syn region xhtmlMaths start="<\(\w\+:\)\?math\>" keepend end="</\(\w\+:\)\?math>" contains=mathmlTag,mathmlEndTag,xmlEntity,xmlComment
+  syn region mathmlTag start=+<[^ /!?<>"']\@=+ keepend end=+>+ contained contains=mathmlTagName,mathmlAttr,xmlEqual,xmlString
+  syn match mathmlTagName +[<]\@<=[^ /!?<>"']\++ contained contains=xmlNamespace,xmlAttribPunct,mathmlElement,@xmlTagHook display
+  syn match mathmlEndTag +</[^ /!?<>"']\+>+ contained contains=xmlNamespace,xmlAttribPunct,mathmlElement
+endif
 
 " Embedded SVG (DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1)
-syn include @xhtmlSVG syntax/svg.vim
-unlet b:current_syntax
-syn cluster xmlTagHook remove=svgElement
-syn cluster xmlAttribHook remove=svgAttr,svgEventAttr,svgEvent
-syn region xhtmlGraph start=+<\(\w\+:\)\?svg\>+ keepend end=+</\(\w\+:\)\?svg>+ contains=svgTag,svgEndTag,xmlEntity,xmlComment
-syn region svgTag start=+<[^ /!?<>"']\@=+ keepend end=+>+ contained contains=svgTagName,svgAttr,svgEventAttr,svgEvent,xmlEqual,xmlString
-syn match svgTagName +[<]\@<=[^ /!?<>"']\++ contained contains=xmlNamespace,xmlAttribPunct,svgElement,@xmlTagHook display
-syn match svgEndTag +</[^ /!?<>"']\+>+ contained contains=xmlNamespace,xmlAttribPunct,svgElement
+if !exists("xhtml_no_embedded_svg")
+  syn include @xhtmlSVG syntax/svg.vim
+  unlet b:current_syntax
+  syn cluster xmlTagHook remove=svgElement
+  syn cluster xmlAttribHook remove=svgAttr,svgEventAttr,svgEvent
+  syn region xhtmlGraph start=+<\(\w\+:\)\?svg\>+ keepend end=+</\(\w\+:\)\?svg>+ contains=svgTag,svgEndTag,xmlEntity,xmlComment
+  syn region svgTag start=+<[^ /!?<>"']\@=+ keepend end=+>+ contained contains=svgTagName,svgAttr,svgEventAttr,svgEvent,xmlEqual,xmlString
+  syn match svgTagName +[<]\@<=[^ /!?<>"']\++ contained contains=xmlNamespace,xmlAttribPunct,svgElement,@xmlTagHook display
+  syn match svgEndTag +</[^ /!?<>"']\+>+ contained contains=xmlNamespace,xmlAttribPunct,svgElement
+endif
 
 " XML declaration attributes
 syn keyword xmlDeclAttr version encoding standalone containedin=xmlProcessing
