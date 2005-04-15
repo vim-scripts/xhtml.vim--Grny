@@ -3,7 +3,7 @@
 " Filenames:	*.xhtml *.html *.htm *.shtml *.stm
 " Maintainer:	Michal Gorny <michal-gorny@wp.pl>
 " URL:		http://mig.webpark.pl/vim/xhtml.vim
-" Last_change:  2005 Apr 11
+" Last_change:  2005 Apr 15
 " Credits:	Based on Claudio Fleiner's html.vim
 
 if !exists("main_syntax")
@@ -228,7 +228,7 @@ if !exists("xhtml_no_rendering")
   syn region xhtmlUnderlineBoldItalic contained start="<em\>" end="</em>"me=e-5 contains=@xhtmlTop
 
   " In XHTML 2.0 href attribute may appear on any element
-  syn region xhtmlLink start="<\z([A-Za-z:]\+\)\>\_[^>]*[ \t\n]href\>\_[^>]\+[^/]>" keepend skip="<\z1\>[^<]\+</\z1>" end="</\z1>"re=s contains=@Spell,xmlTag,xmlEndTag,xmlEntity,xhtmlSSI,xmlComment,javaScript,@xhtmlPreProc
+  syn region xhtmlLink start="<\z([A-Za-z1-6:]\+\)\>\_[^>]*[ \t\n]href\>\_[^>]\+[^/]>" keepend skip="<\z1\>[^<]\+</\z1>" end="</\z1>"re=s contains=@Spell,xmlTag,xmlEndTag,xmlEntity,xhtmlSSI,xmlComment,javaScript,@xhtmlPreProc
 
   syn region xhtmlTitle start="<title\>" end="</title>"me=e-8 contains=@Spell,xmlTag,xmlEndTag,xmlEntity,xhtmlSSI,xmlComment,javaScript,@xhtmlPreProc
   syn region xhtmlH start="<h\>" end="</h>"me=e-4 contains=@xhtmlTop
