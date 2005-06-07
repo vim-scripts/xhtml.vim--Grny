@@ -3,7 +3,7 @@
 " Filenames:	*.xhtml *.html *.htm *.shtml *.stm
 " Maintainer:	Michal Gorny <michal-gorny@wp.pl>
 " URL:		http://mig.webpark.pl/vim/xhtml.vim
-" Last_change:  2005 Apr 15
+" Last_change:  2005 Jun 07
 " Credits:	Based on Claudio Fleiner's html.vim
 
 if !exists("main_syntax")
@@ -83,7 +83,7 @@ syn keyword xhtmlAttr contained selected shape size span src standby summary
 syn keyword xhtmlAttr contained tabindex title type usemap valign value
 syn keyword xhtmlAttr contained valuetype width
 syn match   xhtmlAttr contained /\<\(accept-charset\|http-equiv\|style\)\>/
-syn match   xhtmlAttr contained /\<xmlns\>[^:]/me=e-1
+syn match   xhtmlAttr contained /\<xmlns\>\_[^:]/me=e-1
 
 " Deprecated XHTML 1.0 attributes (Transitional and Frameset)
 syn keyword xhtmlAttr contained alink background bgcolor clear code color
@@ -140,7 +140,7 @@ if !exists("xhtml_no_embedded_svg")
 endif
 
 " XML declaration attributes
-syn keyword xmlDeclAttr version encoding standalone containedin=xmlProcessing
+syn keyword xmlDeclAttr version encoding standalone containedin=xmlProcessing contained
 
 " Server Side Includes (SSI)
 syn region xhtmlSSI start="<!--#" end="-->" contains=xhtmlSSIStmt,xhtmlSSIConditStmt,xhtmlSSIError,xhtmlSSIAttr
