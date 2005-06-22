@@ -3,7 +3,7 @@
 " Filenames:	*.xhtml *.html *.htm *.shtml *.stm
 " Maintainer:	Michal Gorny <michal-gorny@wp.pl>
 " URL:		http://mig.webpark.pl/vim/xhtml.vim
-" Last_change:  2005 Jun 07
+" Last_change:  2005 Jun 22
 " Credits:	Based on Claudio Fleiner's html.vim
 
 if !exists("main_syntax")
@@ -26,7 +26,7 @@ syn case match
 syn cluster xhtmlTagHook add=xhtmlElement
 
 " XHTML 1.0 Strict elements
-syn keyword xhtmlElement contained abbr acronym address area base bdo big
+syn keyword xhtmlElement contained a abbr acronym address area base bdo big
 syn keyword xhtmlElement contained blockquote body br button caption cite code
 syn keyword xhtmlElement contained col colgroup dd del dfn div dl dt em
 syn keyword xhtmlElement contained fieldset form head hr img ins input kbd
@@ -36,23 +36,22 @@ syn keyword xhtmlElement contained script span select small strong style sub
 syn keyword xhtmlElement contained sup table tbody td textarea tfoot th thead
 syn keyword xhtmlElement contained title tr tt ul var
 syn match   xhtmlElement contained /\<h[1-6]\>/
-syn match   xhtmlElement contained /\<html\>[^:]/me=e-1
-syn match   xhtmlElement contained /\<\(a\|b\|i\|p\|q\)\>[^:]/me=e-1
+syn match   xhtmlElement contained /\<\(b\|i\|p\|q\|html\)\>\_[^:]/me=e-1
 
 " Deprecated XHTML 1.0 elements (Transitional and Frameset)
 syn keyword xhtmlElement contained applet basefont center dir font
 syn keyword xhtmlElement contained iframe isindex menu strike
-syn match   xhtmlElement contained /\<\(s\|u\)\>[^:]/me=e-1
+syn match   xhtmlElement contained /\<\(s\|u\)\>\_[^:]/me=e-1
 " Elements only in XHTML 1.0 Frameset
 syn keyword xhtmlElement contained frame noframes frameset
 
 " Elements new in XHTML 1.1 (Ruby Annotation)
 syn keyword xhtmlElement contained ruby rbc rtc rb rt rp
 
-" Elements new in XHTML 2.0 (as of 6th Working Draft)
-syn keyword xhtmlElement contained blockcode di section separator
-syn keyword xhtmlElement contained nl quote standby summary
-syn match   xhtmlElement contained /\<\(h\|l\)\>[^:]/me=e-1
+" Elements new in XHTML 2.0 (as of 7th Working Draft)
+syn keyword xhtmlElement contained access blockcode di handler nl quote
+syn keyword xhtmlElement contained section separator standby summary
+syn match   xhtmlElement contained /\<\(h\|l\)\>\_[^:]/me=e-1
 " XForms elements (XHTML 2.0)
 syn keyword xhtmlElement contained action alert bind case choices copy delete
 syn keyword xhtmlElement contained dispatch extension filename group help hint
@@ -81,9 +80,8 @@ syn keyword xhtmlAttr contained method multiple name nohref profile readonly
 syn keyword xhtmlAttr contained rel rev rows rowspan rules scheme scope
 syn keyword xhtmlAttr contained selected shape size span src standby summary
 syn keyword xhtmlAttr contained tabindex title type usemap valign value
-syn keyword xhtmlAttr contained valuetype width
+syn keyword xhtmlAttr contained valuetype width xmlns
 syn match   xhtmlAttr contained /\<\(accept-charset\|http-equiv\|style\)\>/
-syn match   xhtmlAttr contained /\<xmlns\>\_[^:]/me=e-1
 
 " Deprecated XHTML 1.0 attributes (Transitional and Frameset)
 syn keyword xhtmlAttr contained alink background bgcolor clear code color
@@ -104,14 +102,17 @@ endif
 syn keyword xhtmlAttr contained rbspan
 
 " Attributes new in XHTML 2.0
-syn keyword xhtmlAttr contained about access datatype edit hreftype nextfocus
-syn keyword xhtmlAttr contained prevfocus property resource restype
+syn keyword xhtmlAttr contained about datatype edit encoding full hrefmedia 
+syn keyword xhtmlAttr contained hreftype key layout nextfocus prevfocus
+syn keyword xhtmlAttr contained property role srctype targetid targetrole
+syn match   xhtmlAttr contained /\<content-length\>/
 syn match   xhtmlAttr contained /\<\(xml:\)\@<=base\>/
+syn match   xhtmlAttr contained /\<\(xsi:\)\@<=schemaLocation\>/
 " XForms attributes (XHTML 2.0)
-syn match xhtmlAttr contained "\<\(repeat-model\|repeat-bind\|repeat-nodeset\|repeat-startindex\|repeat-number\)\>"
+syn match xhtmlAttr contained "\<repeat-\(model\|bind\|nodeset\|startindex\|number\)\>"
 " XML Events attributes (XHTML 2.0)
-syn keyword xhtmlAttr contained defaultAction event handler observer phase
-syn keyword xhtmlAttr contained propagate target
+syn keyword xhtmlAttr contained defaultAction event handler observer
+syn keyword xhtmlAttr contained phase propagate target
 
 " SPECIALS
 
@@ -119,8 +120,8 @@ syn keyword xhtmlAttr contained propagate target
 if !exists("xhtml_no_embedded_mathml")
   syn include @xhtmlMathML syntax/mathml.vim
   unlet b:current_syntax
-  syn cluster xmlTagHook remove=mathmlElement
-  syn cluster xmlAttribHook remove=mathmlAttr
+  syn cluster xhtmlTagHook remove=mathmlElement
+  syn cluster xhtmlAttribHook remove=mathmlAttr
   syn region xhtmlMaths start="<\(\w\+:\)\?math\>" keepend end="</\(\w\+:\)\?math>" contains=mathmlTag,mathmlEndTag,xmlEntity,xmlComment
   syn region mathmlTag start=+<[^ /!?<>"']\@=+ keepend end=+>+ contained contains=mathmlTagName,mathmlAttr,xmlEqual,xmlString
   syn match mathmlTagName +[<]\@<=[^ /!?<>"']\++ contained contains=xmlNamespace,xmlAttribPunct,mathmlElement,@xmlTagHook display
@@ -131,8 +132,8 @@ endif
 if !exists("xhtml_no_embedded_svg")
   syn include @xhtmlSVG syntax/svg.vim
   unlet b:current_syntax
-  syn cluster xmlTagHook remove=svgElement
-  syn cluster xmlAttribHook remove=svgAttr,svgEventAttr,svgEvent
+  syn cluster xhtmlTagHook remove=svgElement
+  syn cluster xhtmlAttribHook remove=svgAttr,svgEventAttr,svgEvent
   syn region xhtmlGraph start=+<\(\w\+:\)\?svg\>+ keepend end=+</\(\w\+:\)\?svg>+ contains=svgTag,svgEndTag,xmlEntity,xmlComment
   syn region svgTag start=+<[^ /!?<>"']\@=+ keepend end=+>+ contained contains=svgTagName,svgAttr,svgEventAttr,svgEvent,xmlEqual,xmlString
   syn match svgTagName +[<]\@<=[^ /!?<>"']\++ contained contains=xmlNamespace,xmlAttribPunct,svgElement,@xmlTagHook display
@@ -158,14 +159,14 @@ syn match xhtmlSSIConditAttrName contained "expr="he=e-1
 if main_syntax != 'svg' && (main_syntax != 'java' || exists("java_javascript"))
   syn include @xhtmlJavaScript syntax/javascript.vim
   unlet b:current_syntax
-  syn region javaScript start=+<script[^>]*[^/]>+ keepend end=+</script>+me=s-1 contains=@xhtmlJavaScript,xhtmlScriptTag,@xhtmlPreProc
-  syn region xhtmlScriptTag contained start=+<script+ end=+>+ contains=xmlTagName,xmlString,xmlAttrib
+  syn region javaScript start=+<\z(script\|handler\)[^>]*[^/]>+ keepend end=+</\z1>+me=s-1 contains=@xhtmlJavaScript,xhtmlScriptTag,@xhtmlPreProc
+  syn region xhtmlScriptTag contained start=+<\(script\|handler\)+ end=+>+ contains=xmlTagName,xmlString,xmlAttrib
 
   " Events attributes rendering
   if !exists("xhtml_no_events_rendering")
     syn cluster xmlAttribHook add=xhtmlEvent
-    syn region xhtmlEvent contained start=+\<on\(\(un\)\?load\|\(dbl\)\?click\|mouse\(down\|up\|over\|move\|out\)\|focus\|blur\|key\(press\|down\|up\)\|submit\|reset\|select\|change\)\s*=[\t ]*'+ keepend end=+'+ contains=xhtmlEventSQ
-    syn region xhtmlEvent contained start=+\<on\(\(un\)\?load\|\(dbl\)\?click\|mouse\(down\|up\|over\|move\|out\)\|focus\|blur\|key\(press\|down\|up\)\|submit\|reset\|select\|change\)\s*=[\t ]*"+ keepend end=+"+ contains=xhtmlEventDQ
+    syn region xhtmlEvent contained start=+\<on\(\(un\)\?load\|\(dbl\)\?click\|mouse\(down\|up\|over\|move\|out\)\|focus\|blur\|key\(press\|down\|up\)\|submit\|reset\|select\|change\)\s*=\s*'+ keepend end=+'+ contains=xhtmlEventSQ
+    syn region xhtmlEvent contained start=+\<on\(\(un\)\?load\|\(dbl\)\?click\|mouse\(down\|up\|over\|move\|out\)\|focus\|blur\|key\(press\|down\|up\)\|submit\|reset\|select\|change\)\s*=\s*"+ keepend end=+"+ contains=xhtmlEventDQ
     syn region xhtmlEventSQ contained start=+'+ms=s+1 end=+'+me=s-1 contains=@xhtmlJavaScript
     syn region xhtmlEventDQ contained start=+"+ms=s+1 end=+"+me=s-1 contains=@xhtmlJavaScript
     hi def link xhtmlEventSQ xhtmlEvent
@@ -177,8 +178,8 @@ endif
 if main_syntax != 'java' || exists("java_vb")
   syn include @xhtmlVbScript syntax/vb.vim
   unlet b:current_syntax
-  syn region vbScript start=+<script [^>]*type[ \t\n]*=[ \t\n]*["'][^"']\+vbscript[^>]*[^/]>+ keepend end=+</script>+me=s-1 contains=@xhtmlVbScript,xhtmlScriptTag,@xhtmlPreProc
-  syn region xhtmlScriptTag contained start=+<script+ end=+>+ contains=xmlTagName,xmlString,xmlAttrib
+  syn region vbScript start=+<\z(script\|handler\)[^>]*\_\stype\_\s*=\_\s*["'][^"']\+vbscript[^>]*[^/]>+ keepend end=+</\z1>+me=s-1 contains=@xhtmlVbScript,xhtmlScriptTag,@xhtmlPreProc
+  syn region xhtmlScriptTag contained start=+<\(script\|handler\)+ end=+>+ contains=xmlTagName,xmlString,xmlAttrib
 endif
 
 " Embedded Cascading Style Sheets
@@ -199,39 +200,39 @@ endif
 if !exists("xhtml_no_rendering")
   syn cluster xhtmlTop contains=@Spell,xmlTag,xmlEndTag,xmlEntity,xhtmlSSI,xmlComment,xhtmlLink,javaScript,@xhtmlPreProc
 
-  syn region xhtmlBold start="<b\>" end="</b>"me=e-4 contains=@xhtmlTop,xhtmlBoldUnderline,xhtmlBoldItalic
+  syn region xhtmlBold start="<b[> \t\n]" end="</b>"me=e-4 contains=@xhtmlTop,xhtmlBoldUnderline,xhtmlBoldItalic
   syn region xhtmlBold start="<strong\>" end="</strong>"me=e-9 contains=@xhtmlTop,xhtmlBoldUnderline,xhtmlBoldItalic
-  syn region xhtmlBoldUnderline contained start="<u\>" end="</u>"me=e-4 contains=@xhtmlTop,xhtmlBoldUnderlineItalic
-  syn region xhtmlBoldItalic contained start="<i\>" end="</i>"me=e-4 contains=@xhtmlTop,xhtmlBoldItalicUnderline
+  syn region xhtmlBoldUnderline contained start="<u[> \t\n]" end="</u>"me=e-4 contains=@xhtmlTop,xhtmlBoldUnderlineItalic
+  syn region xhtmlBoldItalic contained start="<i[> \t\n]" end="</i>"me=e-4 contains=@xhtmlTop,xhtmlBoldItalicUnderline
   syn region xhtmlBoldItalic contained start="<em\>" end="</em>"me=e-5 contains=@xhtmlTop,xhtmlBoldItalicUnderline
-  syn region xhtmlBoldUnderlineItalic contained start="<i\>" end="</i>"me=e-4 contains=@xhtmlTop
+  syn region xhtmlBoldUnderlineItalic contained start="<i[> \t\n]" end="</i>"me=e-4 contains=@xhtmlTop
   syn region xhtmlBoldUnderlineItalic contained start="<em\>" end="</em>"me=e-5 contains=@xhtmlTop
-  syn region xhtmlBoldItalicUnderline contained start="<u\>" end="</u>"me=e-4 contains=@xhtmlTop,xhtmlBoldUnderlineItalic
+  syn region xhtmlBoldItalicUnderline contained start="<u[> \t\n]" end="</u>"me=e-4 contains=@xhtmlTop,xhtmlBoldUnderlineItalic
 
-  syn region xhtmlItalic start="<i\>" end="</i>"me=e-4 contains=@xhtmlTop,xhtmlItalicBold,xhtmlItalicUnderline
+  syn region xhtmlItalic start="<i[> \t\n]" end="</i>"me=e-4 contains=@xhtmlTop,xhtmlItalicBold,xhtmlItalicUnderline
   syn region xhtmlItalic start="<em\>" end="</em>"me=e-5 contains=@xhtmlTop
-  syn region xhtmlItalicBold contained start="<b\>" end="</b>"me=e-4 contains=@xhtmlTop,xhtmlItalicBoldUnderline
+  syn region xhtmlItalicBold contained start="<b[> \t\n]" end="</b>"me=e-4 contains=@xhtmlTop,xhtmlItalicBoldUnderline
   syn region xhtmlItalicBold contained start="<strong\>" end="</strong>"me=e-9 contains=@xhtmlTop,xhtmlItalicBoldUnderline
-  syn region xhtmlItalicBoldUnderline contained start="<u\>" end="</u>"me=e-4 contains=@xhtmlTop
-  syn region xhtmlItalicUnderline contained start="<u\>" end="</u>"me=e-4 contains=@xhtmlTop,xhtmlItalicUnderlineBold
-  syn region xhtmlItalicUnderlineBold contained start="<b\>" end="</b>"me=e-4 contains=@xhtmlTop
+  syn region xhtmlItalicBoldUnderline contained start="<u[> \t\n]" end="</u>"me=e-4 contains=@xhtmlTop
+  syn region xhtmlItalicUnderline contained start="<u[> \t\n]" end="</u>"me=e-4 contains=@xhtmlTop,xhtmlItalicUnderlineBold
+  syn region xhtmlItalicUnderlineBold contained start="<b[> \t\n]" end="</b>"me=e-4 contains=@xhtmlTop
   syn region xhtmlItalicUnderlineBold contained start="<strong\>" end="</strong>"me=e-9 contains=@xhtmlTop
 
-  syn region xhtmlUnderline start="<u\>" end="</u>"me=e-4 contains=@xhtmlTop,xhtmlUnderlineBold,xhtmlUnderlineItalic
-  syn region xhtmlUnderlineBold contained start="<b\>" end="</b>"me=e-4 contains=@xhtmlTop,xhtmlUnderlineBoldItalic
+  syn region xhtmlUnderline start="<u[> \t\n]" end="</u>"me=e-4 contains=@xhtmlTop,xhtmlUnderlineBold,xhtmlUnderlineItalic
+  syn region xhtmlUnderlineBold contained start="<b[> \t\n]" end="</b>"me=e-4 contains=@xhtmlTop,xhtmlUnderlineBoldItalic
   syn region xhtmlUnderlineBold contained start="<strong\>" end="</strong>"me=e-9 contains=@xhtmlTop,xhtmlUnderlineBoldItalic
-  syn region xhtmlUnderlineItalic contained start="<i\>" end="</i>"me=e-4 contains=@xhtmlTop,htmUnderlineItalicBold
+  syn region xhtmlUnderlineItalic contained start="<i[> \t\n]" end="</i>"me=e-4 contains=@xhtmlTop,htmUnderlineItalicBold
   syn region xhtmlUnderlineItalic contained start="<em\>" end="</em>"me=e-5 contains=@xhtmlTop,htmUnderlineItalicBold
-  syn region xhtmlUnderlineItalicBold contained start="<b\>" end="</b>"me=e-4 contains=@xhtmlTop
+  syn region xhtmlUnderlineItalicBold contained start="<b[> \t\n]" end="</b>"me=e-4 contains=@xhtmlTop
   syn region xhtmlUnderlineItalicBold contained start="<strong\>" end="</strong>"me=e-9 contains=@xhtmlTop
-  syn region xhtmlUnderlineBoldItalic contained start="<i\>" end="</i>"me=e-4 contains=@xhtmlTop
+  syn region xhtmlUnderlineBoldItalic contained start="<i[> \t\n]" end="</i>"me=e-4 contains=@xhtmlTop
   syn region xhtmlUnderlineBoldItalic contained start="<em\>" end="</em>"me=e-5 contains=@xhtmlTop
 
   " In XHTML 2.0 href attribute may appear on any element
-  syn region xhtmlLink start="<\z([A-Za-z1-6:]\+\)\>\_[^>]*[ \t\n]href\>\_[^>]\+[^/]>" keepend skip="<\z1\>[^<]\+</\z1>" end="</\z1>"re=s contains=@Spell,xmlTag,xmlEndTag,xmlEntity,xhtmlSSI,xmlComment,javaScript,@xhtmlPreProc
+  syn region xhtmlLink start="<\z(\(\w\+:\)\?\w\+\)\_[^>]*\_\shref\>\_[^>]\+[^/]>" keepend skip="<\z1\>[^<]\+</\z1>" end="</\z1>"re=s contains=@Spell,xmlTag,xmlEndTag,xmlEntity,xhtmlSSI,xmlComment,javaScript,@xhtmlPreProc
 
   syn region xhtmlTitle start="<title\>" end="</title>"me=e-8 contains=@Spell,xmlTag,xmlEndTag,xmlEntity,xhtmlSSI,xmlComment,javaScript,@xhtmlPreProc
-  syn region xhtmlH start="<h\>" end="</h>"me=e-4 contains=@xhtmlTop
+  syn region xhtmlH start="<h[> \t\n]" end="</h>"me=e-4 contains=@xhtmlTop
   syn region xhtmlH1 start="<h1\>" end="</h1>"me=e-5 contains=@xhtmlTop
   syn region xhtmlH2 start="<h2\>" end="</h2>"me=e-5 contains=@xhtmlTop
   syn region xhtmlH3 start="<h3\>" end="</h3>"me=e-5 contains=@xhtmlTop
