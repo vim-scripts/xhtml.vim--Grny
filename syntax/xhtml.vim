@@ -1,9 +1,8 @@
 " Vim syntax file
 " Language:	XHTML
-" Filenames:	*.xhtml *.html *.htm *.shtml *.stm
+" Filenames:	*.xhtml *.xht *.html *.htm *.shtml *.stm
 " Maintainer:	Michal Gorny <michal-gorny@wp.pl>
-" URL:		http://mig.webpark.pl/vim/xhtml.vim
-" Last_change:  2005 Jun 22
+" Last_change:  2006-03-23
 " Credits:	Based on Claudio Fleiner's html.vim
 
 if !exists("main_syntax")
@@ -27,8 +26,8 @@ syn cluster xhtmlTagHook add=xhtmlElement
 
 " XHTML 1.0 Strict elements
 syn keyword xhtmlElement contained a abbr acronym address area base bdo big
-syn keyword xhtmlElement contained blockquote body br button caption cite code
-syn keyword xhtmlElement contained col colgroup dd del dfn div dl dt em
+syn keyword xhtmlElement contained blockquote body br button caption cite
+syn keyword xhtmlElement contained code col colgroup dd del dfn div dl dt em
 syn keyword xhtmlElement contained fieldset form head hr img ins input kbd
 syn keyword xhtmlElement contained label legend li link map meta noscript
 syn keyword xhtmlElement contained object ol optgroup option param pre samp
@@ -69,19 +68,20 @@ syn keyword xhtmlElement contained listener
 syn cluster xhtmlAttribHook add=xhtmlAttr
 
 " XHTML 1.0 Strict attributes
-syn keyword xhtmlAttr contained abbr accept accesskey action align alt archive
-syn keyword xhtmlAttr contained axis border cellpadding cellspacing char
-syn keyword xhtmlAttr contained charoff charset checked cite class classid
-syn keyword xhtmlAttr contained codebase codetype cols colspan content coords
-syn keyword xhtmlAttr contained data datetime declare defer dir disabled
-syn keyword xhtmlAttr contained enctype for frame headers height href hreflang
-syn keyword xhtmlAttr contained id ismap label lang longdesc maxlength media
-syn keyword xhtmlAttr contained method multiple name nohref profile readonly
-syn keyword xhtmlAttr contained rel rev rows rowspan rules scheme scope
-syn keyword xhtmlAttr contained selected shape size span src standby summary
-syn keyword xhtmlAttr contained tabindex title type usemap valign value
-syn keyword xhtmlAttr contained valuetype width xmlns
+syn keyword xhtmlAttr contained abbr accept accesskey action align alt
+syn keyword xhtmlAttr contained archive axis border cellpadding cellspacing
+syn keyword xhtmlAttr contained char charoff charset checked cite class
+syn keyword xhtmlAttr contained classid codebase codetype cols colspan content
+syn keyword xhtmlAttr contained coords data datetime declare defer dir
+syn keyword xhtmlAttr contained disabled enctype for frame headers height href
+syn keyword xhtmlAttr contained hreflang id ismap label lang longdesc
+syn keyword xhtmlAttr contained maxlength media method multiple name nohref
+syn keyword xhtmlAttr contained profile readonly rel rev rows rowspan rules
+syn keyword xhtmlAttr contained scheme scope selected shape size span src
+syn keyword xhtmlAttr contained standby summary tabindex title type usemap
+syn keyword xhtmlAttr contained valign value valuetype width
 syn match   xhtmlAttr contained /\<\(accept-charset\|http-equiv\|style\)\>/
+syn match   xhtmlAttr contained /\<xmlns\>\_[^:]/me=e-1
 
 " Deprecated XHTML 1.0 attributes (Transitional and Frameset)
 syn keyword xhtmlAttr contained alink background bgcolor clear code color
@@ -140,8 +140,10 @@ if !exists("xhtml_no_embedded_svg")
   syn match svgEndTag +</[^ /!?<>"']\+>+ contained contains=xmlNamespace,xmlAttribPunct,svgElement
 endif
 
-" XML declaration attributes
+" XML declaration & xml-stylesheet processing instruction
+syn match xmlDecl /\<\(<?\)\@<=xml\(-stylesheet\)\?\>/ containedin=xmlProcessing contained
 syn keyword xmlDeclAttr version encoding standalone containedin=xmlProcessing contained
+syn keyword xmlDeclAttr alternate charset media href title type containedin=xmlProcessing contained
 
 " Server Side Includes (SSI)
 syn region xhtmlSSI start="<!--#" end="-->" contains=xhtmlSSIStmt,xhtmlSSIConditStmt,xhtmlSSIError,xhtmlSSIAttr
@@ -198,7 +200,7 @@ endif
 
 " Rendering
 if !exists("xhtml_no_rendering")
-  syn cluster xhtmlTop contains=@Spell,xmlTag,xmlEndTag,xmlEntity,xhtmlSSI,xmlComment,xhtmlLink,javaScript,@xhtmlPreProc
+  syn cluster xhtmlTop contains=@Spell,xmlProcessing,xmlTag,xmlEndTag,xmlEntity,xhtmlSSI,xmlComment,xhtmlLink,javaScript,@xhtmlPreProc
 
   syn region xhtmlBold start="<b[> \t\n]" end="</b>"me=e-4 contains=@xhtmlTop,xhtmlBoldUnderline,xhtmlBoldItalic
   syn region xhtmlBold start="<strong\>" end="</strong>"me=e-9 contains=@xhtmlTop,xhtmlBoldUnderline,xhtmlBoldItalic
@@ -229,9 +231,9 @@ if !exists("xhtml_no_rendering")
   syn region xhtmlUnderlineBoldItalic contained start="<em\>" end="</em>"me=e-5 contains=@xhtmlTop
 
   " In XHTML 2.0 href attribute may appear on any element
-  syn region xhtmlLink start="<\z(\(\w\+:\)\?\w\+\)\_[^>]*\_\shref\>\_[^>]\+[^/]>" keepend skip="<\z1\>[^<]\+</\z1>" end="</\z1>"re=s contains=@Spell,xmlTag,xmlEndTag,xmlEntity,xhtmlSSI,xmlComment,javaScript,@xhtmlPreProc
+  syn region xhtmlLink start="<\z(\(\w\+:\)\?\w\+\)\_[^>]*\_\shref\>\_[^>]\+[^/]>" keepend skip="<\z1\>[^<]\+</\z1>" end="</\z1>"re=s contains=@Spell,xmlProcessing,xmlTag,xmlEndTag,xmlEntity,xhtmlSSI,xmlComment,javaScript,@xhtmlPreProc
 
-  syn region xhtmlTitle start="<title\>" end="</title>"me=e-8 contains=@Spell,xmlTag,xmlEndTag,xmlEntity,xhtmlSSI,xmlComment,javaScript,@xhtmlPreProc
+  syn region xhtmlTitle start="<title\>" end="</title>"me=e-8 contains=@Spell,xmlProcessing,xmlTag,xmlEndTag,xmlEntity,xhtmlSSI,xmlComment,javaScript,@xhtmlPreProc
   syn region xhtmlH start="<h[> \t\n]" end="</h>"me=e-4 contains=@xhtmlTop
   syn region xhtmlH1 start="<h1\>" end="</h1>"me=e-5 contains=@xhtmlTop
   syn region xhtmlH2 start="<h2\>" end="</h2>"me=e-5 contains=@xhtmlTop
@@ -253,6 +255,7 @@ endif
 hi link     xmlAttrib			Function
 hi link     xmlEntity			Special
 hi link     xmlEntityPunct		Special
+hi def link xmlDecl			Statement
 hi def link xmlDeclAttr			Type
 hi def link xhtmlAttr			Type
 hi def link xhtmlEventAttr		Type
